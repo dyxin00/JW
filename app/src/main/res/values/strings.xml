@@ -4,5 +4,6 @@
     <string name="app_name">JW</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_index">首页</string>
 
 </resources>

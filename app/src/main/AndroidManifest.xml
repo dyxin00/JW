@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.qdu.jw.app.IndexActivity"
+            android:logo="@drawable/home_logo"
+            android:label="@string/title_activity_index" >
+        </activity>
     </application>
 
 </manifest>
