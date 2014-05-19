@@ -1,0 +1,15 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+.DS_Store
+build.gradle
+gradle
+gradle.properties
+gradlew
+gradlew.bat
+JW.iml
+local.properties
+settings.gradle
+.idea
+*.swp
+!app/build.gradle
