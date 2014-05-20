@@ -28,6 +28,7 @@ public class TabNavigationPagerFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //TODO:create the real view
         View rootView = inflater.inflate(R.layout.fragment_tab_navigation_pager, container, false);
         Bundle args = getArguments();
         ((TextView)rootView.findViewById(R.id.pager_text_view)).setText("hello" + args.getInt(KEY_STRING));

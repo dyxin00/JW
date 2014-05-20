@@ -13,4 +13,14 @@
         <item>待定2</item>
     </array>
 
+    <array name="drawer_menu_item_title">
+        <item>我的信息</item>
+        <item>待定1</item>
+        <item>待定2</item>
+        <item>待定3</item>
+    </array>
+
+    <string name="drawer_open">菜单</string>
+    <string name="drawer_close">首页</string>
+
 </resources>
