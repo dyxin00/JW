@@ -6,4 +6,11 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_index">首页</string>
 
+    <array name="tab_title">
+        <item>课程表</item>
+        <item>成绩单</item>
+        <item>待定1</item>
+        <item>待定2</item>
+    </array>
+
 </resources>
