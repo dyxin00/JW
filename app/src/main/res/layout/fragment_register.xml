@@ -1,0 +1,107 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.qdu.jw.app.fragment.RegisterFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- student id -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_text_register_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:ems="10"
+                android:hint="@string/account"
+                android:inputType="number" />
+        </LinearLayout>
+
+
+        <!-- jw password -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_text_register_jwpassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:ems="10"
+                android:hint="@string/jw_password"
+                android:inputType="textPassword"></EditText>
+        </LinearLayout>
+
+        <!-- app password -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_text_register_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:ems="10"
+                android:hint="@string/app_password"
+                android:inputType="textPassword"></EditText>
+        </LinearLayout>
+
+        <!-- Captcha -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/edit_text_register_captcha"
+                android:layout_width="85dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/captcha"
+                android:layout_marginLeft="10dp" />
+
+            <ImageView
+                android:id="@+id/image_view_register_captcha"
+                android:layout_width="80dp"
+                android:layout_height="25dp"
+                android:scaleType="fitXY"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp" />
+
+            <Button
+                android:id="@+id/button_register_refresh_captcha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/refresh_captcha" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/button_register_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:text="@string/login" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</FrameLayout>
