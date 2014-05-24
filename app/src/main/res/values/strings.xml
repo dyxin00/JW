@@ -37,5 +37,23 @@
     <string name="captcha">验证码</string>
     <string name="refresh_captcha">刷新</string>
 
+    <!-- server -->
+    <string name="URL">http://192.168.41.57:8000</string>
+
+    <!--error-->
+
+    <string name="account_null">学号不能为空</string>
+    <string name="jw_password_null">教务密码不能为空</string>
+    <string name="client_password_null">客户端密码不能为空</string>
+    <string name="captcha_null">验证码不能为空</string>
+
+    <string name="account_error">学号不存在</string>
+    <string name="jw_password_error">教务密码错误</string>
+    <string name="client_password_error">客户端帐号或密码错误</string>
+    <string name="captcha_error">验证码错误</string>
+
+    <string name="account_exists">学号已经注册</string>
+    <string name="account_active">帐号已经被禁用</string>
+
 
 </resources>
