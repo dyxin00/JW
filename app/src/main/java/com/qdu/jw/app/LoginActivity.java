@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 
 import com.qdu.jw.app.fragment.LoginFragment;
+import com.qdu.jw.app.linkServer.CreateAsyncHttpClient;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -17,6 +18,7 @@ public class LoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        CreateAsyncHttpClient.createClient(getBaseContext());
         addLoginFragment(savedInstanceState);
     }
 
