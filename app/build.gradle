@@ -19,16 +19,14 @@ android {
 }
 
 dependencies {
-    
-
     // The Google Repository (separate from the corresponding library) can be found in the Extras category.
     // compile 'com.google.android.gms:play-services:4.0.30'
     // You must install or update the Google Repository through the SDK manager to use this dependency.
     // The Google Repository (separate from the corresponding library) can be found in the Extras category.
-    // 
+    //
     // You must install or update the Google Repository through the SDK manager to use this dependency.
     // The Google Repository (separate from the corresponding library) can be found in the Extras category.
-    // 
+    //
     // You must install or update the Google Repository through the SDK manager to use this dependency.
     // The Google Repository (separate from the corresponding library) can be found in the Extras category.
     //
@@ -48,6 +46,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('src/main/java/libs/fastjson-1.1.6.jar')
     compile files('src/main/java/libs/android-async-http-1.4.4.jar')
+    compile files('src/main/java/libs/ormlite-android-4.48.jar')
+    compile files('src/main/java/libs/ormlite-core-4.48.jar')
 }
 buildscript {
     repositories {

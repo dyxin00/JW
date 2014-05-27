@@ -38,7 +38,8 @@
     <string name="refresh_captcha">刷新</string>
 
     <!-- server -->
-    <string name="URL">http://192.168.41.57:8000</string>
+    <!--<string name="URL">http://192.168.41.57:8000</string>-->
+    <string name="URL">http://0.0.0.0:8000</string>
 
     <!--error-->
 
