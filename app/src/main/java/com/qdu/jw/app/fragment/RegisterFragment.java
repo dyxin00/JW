@@ -15,14 +15,21 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.qdu.jw.app.LoginActivity;
 import com.qdu.jw.app.R;
 import com.qdu.jw.app.linkServer.CreateAsyncHttpClient;
+import com.qdu.jw.app.models.User;
+import com.qdu.jw.app.utils.DatabaseHelper;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -30,12 +37,21 @@ import java.util.List;
  */
 
 public class RegisterFragment extends Fragment{
+    private EditText accountEditText;
+    private EditText jwPassCodeEditText;
+    private EditText clientPassCodeEditText;
+    private EditText captchaEditText;
+    private ImageView imageViewCaptcha;
+    private Button signIn;
+    private Button refresh;
+    private DatabaseHelper databaseHelper = null;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_register, container, false);
         setHomeAsUpEnable();
         initViewWidget(rootView);
         ExecutionEventView(rootView, container);
+        getHelper();
         return rootView;
     }
     public void setHomeAsUpEnable(){
@@ -72,6 +88,7 @@ public class RegisterFragment extends Fragment{
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(responseBody, 0, responseBody.length);
                 imageViewCaptcha.setImageBitmap(bitmap);
+                Log.i("wang", "set captcha succeed");
             }
 
             @Override
@@ -124,7 +141,7 @@ public class RegisterFragment extends Fragment{
                     public void onSuccess(String content) {
                         JSONObject jsonObject = JSON.parseObject(content);
                         int status = jsonObject.getInteger("status");
-                        String Url = getString(R.string.URL) + "/get_lesson";
+                        String Url = getString(R.string.URL) + "/student_info";
                         switch (status) {
 
                             case 200: {
@@ -133,8 +150,30 @@ public class RegisterFragment extends Fragment{
                                     public void onSuccess(String content) {
                                         //Log.i("xin", content);
                                         List<JSONObject> jsonObjects = JSON.parseArray(content, JSONObject.class);
-                                        for (JSONObject i : jsonObjects) {
-                                            Log.i("xin", i.getString("lesson_name") + i.getString("week_start") + "  " + i.getString("week") + "   " + i.getString("day_start"));
+                                        JSONObject info = jsonObjects.get(0);
+//                                        for (JSONObject i : jsonObjects) {
+//                                            Log.i("xin", i.getString("student_id") + i.getString("week_start") + "  " + i.getString("week") + "   " + i.getString("day_start"));
+                                            Log.i("wang", info.getString("student_id") + " " + info.getString("full_name")
+                                            + " " + info.getString("college")
+                                            + " " + info.getString("school_year")
+                                            + " " + info.getString("team")
+                                            + " " + info.getString("specialty"));
+//                                        }
+                                        Log.i("wang", "student info succeed!");
+                                        Dao<User, Integer> userDao = null;
+                                        try {
+                                            userDao = getHelper().getUserDao();
+                                            User user = new User();
+                                            user.setStudentId(info.getString("student_id"));
+                                            user.setFullName(info.getString("full_name"));
+                                            user.setCollege(info.getString("college"));
+                                            user.setSchoolYear(info.getString("school_year"));
+                                            user.setTeam(info.getString("team"));
+                                            user.setSpecialty(info.getString("specialty"));
+
+                                            userDao.create(user);
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
                                         }
                                     }
                                 });
@@ -199,11 +238,11 @@ public class RegisterFragment extends Fragment{
     }
 
 
-    private EditText accountEditText;
-    private EditText jwPassCodeEditText;
-    private EditText clientPassCodeEditText;
-    private EditText captchaEditText;
-    private ImageView imageViewCaptcha;
-    private Button signIn;
-    private Button refresh;
+
+    private DatabaseHelper getHelper(){
+        if (databaseHelper == null) {
+            databaseHelper = OpenHelperManager.getHelper(getActivity(), DatabaseHelper.class);
+        }
+        return databaseHelper;
+    }
 }

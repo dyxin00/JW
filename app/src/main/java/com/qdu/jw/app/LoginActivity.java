@@ -1,12 +1,22 @@
 package com.qdu.jw.app;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 import com.qdu.jw.app.fragment.LoginFragment;
 import com.qdu.jw.app.linkServer.CreateAsyncHttpClient;
+import com.qdu.jw.app.models.User;
+import com.qdu.jw.app.utils.DatabaseHelper;
+
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -17,9 +27,25 @@ public class LoginActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        try {
+            Dao<User, Integer> userDao = getHelper().getUserDao();
+            User user = new User();
+            user.setStudentId("201140705021");
+            List<User> list = userDao.queryForMatching(user);
+            Log.i("wang", "user " + list.size() + " " + list.get(0).getStudentId() + " " + list.get(0).getFullName() + " " + list.get(0).getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
         CreateAsyncHttpClient.createClient(getBaseContext());
         addLoginFragment(savedInstanceState);
+    }
+    private DatabaseHelper databaseHelper = null;
+    public DatabaseHelper getHelper(){
+        if(databaseHelper == null)
+            databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+        return databaseHelper;
     }
 
     public void addLoginFragment(final Bundle savedInstanceState) {
