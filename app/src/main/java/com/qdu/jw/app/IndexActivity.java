@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +17,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+import com.qdu.jw.app.adapter.DrawerMenuListAdapter;
 import com.qdu.jw.app.adapter.TabNavigationPagerAdapter;
+import com.qdu.jw.app.models.User;
+import com.qdu.jw.app.utils.DatabaseHelper;
+
+import java.sql.SQLException;
+import java.util.List;
 
 
 public class IndexActivity extends ActionBarActivity {
@@ -37,6 +46,16 @@ public class IndexActivity extends ActionBarActivity {
         initViewPager();
         initNavigationTab();
         initDrawerMenu();
+        try {
+            Dao<User, Integer> userDao = getHelper().getUserDao();
+            User user = new User();
+            user.setStudentId("201140705021");
+            List<User> list = userDao.queryForMatching(user);
+            Log.i("wang", "user login status after login" + list.get(0).getLoginStatus());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -139,13 +158,13 @@ public class IndexActivity extends ActionBarActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerMenuList = (ListView)findViewById(R.id.left_drawer_menu);
         String[] menuItemTitle = getResources().getStringArray(R.array.drawer_menu_item_title);
+
         //TODO:create adapter of menu list
-        mDrawerMenuList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_menu_list_item, menuItemTitle));
+        mDrawerMenuList.setAdapter(DrawerMenuListAdapter.newAdapter(this, getHelper(), menuItemTitle));
         mDrawerMenuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO:create item click event
-                mViewPager.setCurrentItem(position);
             }
         });
         mActionBar.setHomeButtonEnabled(true);
@@ -170,5 +189,20 @@ public class IndexActivity extends ActionBarActivity {
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    private DatabaseHelper mDatabaseHelper = null;
+    private DatabaseHelper getHelper(){
+        if(mDatabaseHelper == null){
+            mDatabaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+        }
+        return mDatabaseHelper;
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mDatabaseHelper != null){
+            OpenHelperManager.releaseHelper();
+            mDatabaseHelper = null;
+        }
+    }
 }

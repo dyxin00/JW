@@ -30,9 +30,10 @@ public class LoginActivity extends ActionBarActivity {
         try {
             Dao<User, Integer> userDao = getHelper().getUserDao();
             User user = new User();
-            user.setStudentId("201140705021");
-            List<User> list = userDao.queryForMatching(user);
-            Log.i("wang", "user " + list.size() + " " + list.get(0).getStudentId() + " " + list.get(0).getFullName() + " " + list.get(0).getId());
+//            user.setStudentId("201140705021");
+//            List<User> list = userDao.queryForMatching(user);
+            List<User> list = userDao.queryForAll();
+            Log.i("wang", "user " + list.size() + " " + list.get(0).getLoginStatus() + " " + list.get(0).getStudentId() + " " + list.get(0).getFullName() + " " + list.get(0).getId());
         } catch (SQLException e) {
             e.printStackTrace();
         }

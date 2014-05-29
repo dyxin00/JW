@@ -116,26 +116,32 @@ public class LoginFragment extends Fragment{
                         String Url = getString(R.string.URL) + "/get_lesson";
                         switch (status) {
                             case 200: {
-                                client.get(Url, null,
-                                        new AsyncHttpResponseHandler() {
-                                            @Override
-                                            public void onSuccess(String content) {
-                                                Log.i("xin", content);
-                                                List<JSONObject> jsonObjects = JSON.parseArray(content, JSONObject.class);
-                                                for (JSONObject i : jsonObjects) {
-
-                                                    Log.i("xin", i.getString("lesson_name") + i.getString("week_start") + "  " + i.getString("week") + "   " + i.getString("day_start"));
-                                                }
-                                            }
-                                        }
-                                );
+//                                client.get(Url, null,
+//                                        new AsyncHttpResponseHandler() {
+//                                            @Override
+//                                            public void onSuccess(String content) {
+//                                                Log.i("xin", content);
+//                                                List<JSONObject> jsonObjects = JSON.parseArray(content, JSONObject.class);
+//                                                for (JSONObject i : jsonObjects) {
+//
+//                                                    Log.i("xin", i.getString("lesson_name") + i.getString("week_start") + "  " + i.getString("week") + "   " + i.getString("day_start"));
+//                                                }
+//                                            }
+//                                        }
+//                                );
                                 Dao<User, Integer> userDao = null;
                                 try {
                                     userDao = getHelper().getUserDao();
                                     List<User> list = userDao.queryForMatching(user);
                                     if(list.size() != 0){
+//                                        user.setLoginStatus(true);
+                                        User t = list.get(0);
+                                        t.setLoginStatus(true);
+                                        userDao.update(t);
+                                        Log.i("wang", "login succeed" + list.get(0).getStudentId() + list.get(0).getFullName() + "after update " + t.getLoginStatus());
                                         Intent intent = new Intent(getActivity(), IndexActivity.class);
                                         startActivity(intent);
+                                        getActivity().finish();
                                     }
                                 } catch (SQLException e) {
                                     e.printStackTrace();
@@ -185,6 +191,15 @@ public class LoginFragment extends Fragment{
     private EditText accountEditText;
     private EditText passCodeEditText;
     private CheckBox checkBox;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mDatabaseHelper != null){
+            OpenHelperManager.releaseHelper();
+            mDatabaseHelper = null;
+        }
+    }
 
     public DatabaseHelper getHelper(){
         if(mDatabaseHelper == null)
