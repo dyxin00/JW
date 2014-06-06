@@ -1,5 +1,6 @@
 package com.qdu.jw.app.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,13 +17,19 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.qdu.jw.app.IndexActivity;
 import com.qdu.jw.app.R;
 
 import com.qdu.jw.app.linkServer.CreateAsyncHttpClient;
+import com.qdu.jw.app.models.User;
+import com.qdu.jw.app.utils.DatabaseHelper;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -31,6 +38,7 @@ import java.util.List;
 public class LoginFragment extends Fragment{
     private Button mRegisterButton;
     private FragmentManager mFragmentManager;
+    private DatabaseHelper mDatabaseHelper = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,6 +88,7 @@ public class LoginFragment extends Fragment{
         final String Url = getString(R.string.URL) + "/login_client";
         String account;
         String passCode;
+        User user = new User();
         @Override
         public void onClick(View v) {
 
@@ -89,6 +98,7 @@ public class LoginFragment extends Fragment{
 
                 params.put("c_id", account);
                 params.put("c_passcode", passCode);
+                user.setStudentId(account);
 
                 client.post(Url, params, new AsyncHttpResponseHandler() {
 
@@ -106,19 +116,36 @@ public class LoginFragment extends Fragment{
                         String Url = getString(R.string.URL) + "/get_lesson";
                         switch (status) {
                             case 200: {
-                                client.get(Url, null,
-                                        new AsyncHttpResponseHandler() {
-                                            @Override
-                                            public void onSuccess(String content) {
-                                                Log.i("xin", content);
-                                                List<JSONObject> jsonObjects = JSON.parseArray(content, JSONObject.class);
-                                                for (JSONObject i : jsonObjects) {
-
-                                                    Log.i("xin", i.getString("lesson_name") + i.getString("week_start") + "  " + i.getString("week") + "   " + i.getString("day_start"));
-                                                }
-                                            }
-                                        }
-                                );
+//                                client.get(Url, null,
+//                                        new AsyncHttpResponseHandler() {
+//                                            @Override
+//                                            public void onSuccess(String content) {
+//                                                Log.i("xin", content);
+//                                                List<JSONObject> jsonObjects = JSON.parseArray(content, JSONObject.class);
+//                                                for (JSONObject i : jsonObjects) {
+//
+//                                                    Log.i("xin", i.getString("lesson_name") + i.getString("week_start") + "  " + i.getString("week") + "   " + i.getString("day_start"));
+//                                                }
+//                                            }
+//                                        }
+//                                );
+                                Dao<User, Integer> userDao = null;
+                                try {
+                                    userDao = getHelper().getUserDao();
+                                    List<User> list = userDao.queryForMatching(user);
+                                    if(list.size() != 0){
+//                                        user.setLoginStatus(true);
+                                        User t = list.get(0);
+                                        t.setLoginStatus(true);
+                                        userDao.update(t);
+                                        Log.i("wang", "login succeed" + list.get(0).getStudentId() + list.get(0).getFullName() + "after update " + t.getLoginStatus());
+                                        Intent intent = new Intent(getActivity(), IndexActivity.class);
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                    }
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
                                 break;
                             }
                             case 404: {
@@ -164,5 +191,20 @@ public class LoginFragment extends Fragment{
     private EditText accountEditText;
     private EditText passCodeEditText;
     private CheckBox checkBox;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mDatabaseHelper != null){
+            OpenHelperManager.releaseHelper();
+            mDatabaseHelper = null;
+        }
+    }
+
+    public DatabaseHelper getHelper(){
+        if(mDatabaseHelper == null)
+            mDatabaseHelper = OpenHelperManager.getHelper(getActivity(), DatabaseHelper.class);
+        return mDatabaseHelper;
+    }
 
 }

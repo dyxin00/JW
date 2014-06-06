@@ -15,7 +15,7 @@
     </array>
     <array name="drawer_menu_item_title">
         <item>我的信息</item>
-        <item>待定1</item>
+        <item>首页</item>
         <item>待定2</item>
         <item>待定3</item>
     </array>
@@ -38,7 +38,8 @@
     <string name="refresh_captcha">刷新</string>
 
     <!-- server -->
-    <string name="URL">http://192.168.41.57:8000</string>
+    <!--<string name="URL">http://192.168.41.57:8000</string>-->
+    <string name="URL">http://10.1.56.17:8000</string>
 
     <!--error-->
 
