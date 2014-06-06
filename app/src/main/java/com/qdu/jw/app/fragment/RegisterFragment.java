@@ -170,6 +170,7 @@ public class RegisterFragment extends Fragment{
                                             user.setSchoolYear(info.getString("school_year"));
                                             user.setTeam(info.getString("team"));
                                             user.setSpecialty(info.getString("specialty"));
+                                            user.setCourse(info.getString("course"));
 
                                             userDao.create(user);
                                         } catch (SQLException e) {

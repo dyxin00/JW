@@ -2,6 +2,7 @@ package com.qdu.jw.app;
 
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,9 +11,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -21,6 +24,11 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import com.qdu.jw.app.adapter.DrawerMenuListAdapter;
 import com.qdu.jw.app.adapter.TabNavigationPagerAdapter;
+import com.qdu.jw.app.fragment.IndexFragment;
+import com.qdu.jw.app.fragment.LoginFragment;
+import com.qdu.jw.app.fragment.RegisterFragment;
+import com.qdu.jw.app.fragment.TabNavigationPagerFragment;
+import com.qdu.jw.app.fragment.UserInfoFragment;
 import com.qdu.jw.app.models.User;
 import com.qdu.jw.app.utils.DatabaseHelper;
 
@@ -43,18 +51,22 @@ public class IndexActivity extends ActionBarActivity {
         setContentView(R.layout.activity_index);
 
         initActionBar();
-        initViewPager();
-        initNavigationTab();
         initDrawerMenu();
-        try {
-            Dao<User, Integer> userDao = getHelper().getUserDao();
-            User user = new User();
-            user.setStudentId("201140705021");
-            List<User> list = userDao.queryForMatching(user);
-            Log.i("wang", "user login status after login" + list.get(0).getLoginStatus());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        IndexFragment indexFragment = new IndexFragment();
+
+        transaction.add(R.id.fragment_container_index, indexFragment);
+        transaction.addToBackStack("index");
+        transaction.commit();
+//        try {
+//            Dao<User, Integer> userDao = getHelper().getUserDao();
+//            User user = new User();
+//            user.setStudentId("201140705021");
+//            List<User> list = userDao.queryForMatching(user);
+//            Log.i("wang", "user login status after login" + list.get(0).getLoginStatus());
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -66,38 +78,19 @@ public class IndexActivity extends ActionBarActivity {
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
 
-        // Pass the event to ActionBarDrawerToggle, if it returns
-        // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        switch(item.getItemId()){
-            case R.id.action_settings:
-                //TODO:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    public void initActionBar(){
+    public void initActionBar() {
         mActionBar = getSupportActionBar();
-//        mActionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    public void initNavigationTab(){
+    public void initNavigationTab() {
         mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         mActionBar.setDisplayShowTitleEnabled(true);
+        mPagerAdapter = new TabNavigationPagerAdapter(getSupportFragmentManager());
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
             @Override
             public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-                mViewPager.setCurrentItem(tab.getPosition());
+//                mViewPager.setCurrentItem(tab.getPosition());
             }
 
             @Override
@@ -111,53 +104,31 @@ public class IndexActivity extends ActionBarActivity {
             }
         };
         String[] tabTitle = getResources().getStringArray(R.array.tab_title);
-        for(int i = 0; i < mPagerAdapter.getCount(); i++){
+        for (int i = 0; i < mPagerAdapter.getCount(); i++) {
             mActionBar.addTab(mActionBar.newTab().setText(tabTitle[i]).setTabListener(tabListener));
         }
     }
 
-    public void initViewPager(){
-        mViewPager = (ViewPager)findViewById(R.id.tab_view_pager);
-        mPagerAdapter = new TabNavigationPagerAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(mPagerAdapter);
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                mActionBar.setSelectedNavigationItem(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-    }
-
-    public void initDrawerMenu(){
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close){
-            public void onDrawerClosed(View view){
+    public void initDrawerMenu() {
+        mActionBar.setHomeButtonEnabled(true);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close) {
+            public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(R.string.drawer_close);
+//                getSupportActionBar().setTitle(R.string.drawer_close);
                 invalidateOptionsMenu();//create call to onPreparedOptionsMenu()
             }
 
-            public void onDrawerOpened(View view){
+            public void onDrawerOpened(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(R.string.drawer_open);
+//                getSupportActionBar().setTitle(R.string.drawer_open);
                 invalidateOptionsMenu();
 
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerMenuList = (ListView)findViewById(R.id.left_drawer_menu);
-        String[] menuItemTitle = getResources().getStringArray(R.array.drawer_menu_item_title);
+        mDrawerMenuList = (ListView) findViewById(R.id.left_drawer_menu);
+        final String[] menuItemTitle = getResources().getStringArray(R.array.drawer_menu_item_title);
 
         //TODO:create adapter of menu list
         mDrawerMenuList.setAdapter(DrawerMenuListAdapter.newAdapter(this, getHelper(), menuItemTitle));
@@ -165,15 +136,48 @@ public class IndexActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //TODO:create item click event
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                switch (position) {
+                    case 0:
+                        UserInfoFragment userInfoFragment = new UserInfoFragment();
+                        transaction.replace(R.id.fragment_container_index, userInfoFragment);
+                        Log.i("wang", "drawer menu item position-->" + position);
+                        transaction.commit();
+                        mActionBar.setTitle(menuItemTitle[position]);
+                        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+                        break;
+                    case 1:
+                        mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+                        mActionBar.setTitle(menuItemTitle[position]);
+                        IndexFragment indexFragment = new IndexFragment();
+                        transaction.replace(R.id.fragment_container_index, indexFragment);
+                        transaction.commit();
+                        break;
+                }
+                mDrawerLayout.closeDrawer(mDrawerMenuList);
             }
         });
-        mActionBar.setHomeButtonEnabled(true);
     }
 
-    /*called whenever we call invalidateOptionsMenu()*/
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
+        Log.i("wang", "activity options item select");
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        switch(item.getItemId()){
+            case R.id.action_settings:
+                //TODO:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -183,6 +187,14 @@ public class IndexActivity extends ActionBarActivity {
         mDrawerToggle.syncState();
     }
 
+
+    /*called whenever we call invalidateOptionsMenu()*/
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -190,8 +202,9 @@ public class IndexActivity extends ActionBarActivity {
     }
 
     private DatabaseHelper mDatabaseHelper = null;
-    private DatabaseHelper getHelper(){
-        if(mDatabaseHelper == null){
+
+    private DatabaseHelper getHelper() {
+        if (mDatabaseHelper == null) {
             mDatabaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
         }
         return mDatabaseHelper;
@@ -200,9 +213,17 @@ public class IndexActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mDatabaseHelper != null){
+        if (mDatabaseHelper != null) {
             OpenHelperManager.releaseHelper();
             mDatabaseHelper = null;
         }
+    }
+
+    private FragmentManager mFragmentManager;
+     @Override
+    public boolean onSupportNavigateUp() {
+         mFragmentManager = getSupportFragmentManager();
+         mFragmentManager.popBackStack();
+        return true;
     }
 }
